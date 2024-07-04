@@ -1,2 +1,3 @@
-/dump/*
-/items/*
+dump
+items
+./vscode
