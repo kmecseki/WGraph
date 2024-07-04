@@ -1,9 +1,15 @@
+"""
+Analyze data, e.g. get items that are worth the most, or are most sought for.
+"""
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import json
 import os
 
 def top10_most_traded():
+    """Returns most traded items."""
+    
     lista = []
     for fname in os.listdir("./dump/"):
         if fname.endswith(".json"):
