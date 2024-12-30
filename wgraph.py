@@ -6,9 +6,10 @@ Saves data as a file.
 import os
 import json
 import time
+from datetime import date, datetime
 import requests
 
-def getitems(tag):
+def getitems(*args, no=None):
     """Get current item list."""
 
     items = []
@@ -16,13 +17,8 @@ def getitems(tag):
         with open(os.path.join("./items/wfm-items/tracked/items/"\
                                ,filename), 'r', encoding='utf-8') as file:
             data = json.load(file)
-            if "tags" in data and tag == "arcanes":
-                if "arcane_enhancement" in data["tags"]:
-                    make_url = url_gen(data)
-                    items.append(make_url)
-                    #items.append(data.get('i18n', {}).get('en', {}).get('item_name'))
-            if "tags" in data and tag == "mods":
-                if "mod" in data["tags"] and "warframe" in data["tags"]:
+            if "tags" in data:
+                if all(arg in data["tags"] for arg in args):# and no is not None and no not in data["tags"]:
                     make_url = url_gen(data)
                     items.append(make_url)
     return items
@@ -41,9 +37,21 @@ def url_gen(data):
     return pair
 
 def fetch_json_and_save(url):
-    """Fetches json data and saves it as a file."""
+    """Fetches json data and saves it as a file if the file is not recent (older than a week or doesn't exist)."""
+    
+    try:
+        with open(url[0], 'r', encoding='utf-8') as file:
+            data = json.load(file)
+            file_date = datetime.strptime(data["payload"]["statistics_live"]["48hours"][0]["datetime"][0:10], "%Y-%m-%d").date()
+            today = date.today()
+            age = (today-file_date).days
+            if age <= 3:
+                return
+    except FileNotFoundError:
+        pass
 
     try:
+        time.sleep(1) # Make sure we don't exceed time between requests
         response = requests.get(url[1], timeout=50)
         response.raise_for_status()  # Check for HTTP errors
         json_data = response.json()  # Parse the JSON data from the response
@@ -54,8 +62,11 @@ def fetch_json_and_save(url):
     except Exception as e:
         print(f"An error occurred while saving the JSON data: {e}")
 
-lista = getitems("mods") # "arcanes", "mods", "component", "weapon", "prime", "relic"
-for urls in lista:
-    fetch_json_and_save(urls)
-    time.sleep(3)
-    print(f"Processing {urls[0]}")
+def download_and_save(lista):
+    i = 1
+    N = len(lista)
+    for urls in lista:
+        fetch_json_and_save(urls)
+        print(f"Processing {urls[0]}, {i}/{N}")
+        i += 1
+

@@ -57,8 +57,3 @@ df2 = pd.DataFrame(lista)
 df2.columns = ['name', 'volume', 'avg_price']
 top = df2.sort_values(by='volume', ascending=False).head(number_of_items)
 print(top)
-
-
-
-
-
