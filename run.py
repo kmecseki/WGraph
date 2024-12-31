@@ -1,5 +1,7 @@
 
+import pandas as pd
 from wgraph import getitems, download_and_save
+import analyze
 
 
 if __name__ == "__main__":
@@ -74,9 +76,20 @@ if __name__ == "__main__":
     if proceed == "yes" or proceed == "y" or proceed == "Yes" or proceed == "Y":
         download_and_save(items)
     
+    # Get a list of the item names
+    file_names = []
+    for item in items:
+        file_names.append(item[0])
     choice = input("Analyze: 1. Top most traded\n")
     match choice:
         case "1":
+            number_of_items = 50
+
+            lista = analyze.top_most_traded(file_names)
+            df2 = pd.DataFrame(lista)
+            df2.columns = ['name', 'volume', 'avg_price']
+            top = df2.sort_values(by='volume', ascending=False).head(number_of_items)
+            print(top)
             
 
 

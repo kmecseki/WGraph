@@ -7,27 +7,17 @@ import pandas as pd
 import json
 import os
 
-def top_most_traded(only_listed=True):
+def top_most_traded(file_names):
     """Returns most traded items."""
-
-    if only_listed:
-        to_check = []
-        with open("Suda.txt",'r') as suda:
-            for r in suda:
-                to_check.append(r.removesuffix('\n'))
+    
     lista = []
-    for fname in os.listdir("./dump/"):
-        if fname.endswith(".json"):
-            filename = os.path.join("./dump", fname)
-            with open(filename,'r') as f: # check extension?
-                data = json.load(f)
+    for filename in file_names:
+        with open(filename,'r') as f: # check extension?
+            data = json.load(f)
         item = []
-        name = fname.removesuffix(".json")
-        if only_listed:
-            if name in to_check:
-                item.append(name)
-        else:
-            item.append(name)
+        name = filename.removesuffix(".json")
+        name = name.removeprefix("./dump/")
+        item.append(name)
         # Reported trades - long term
         longterm_trades_data = data['payload']['statistics_closed']['90days']
         if longterm_trades_data != []:
@@ -46,14 +36,16 @@ def top_most_traded(only_listed=True):
             lista.append(item)
     return lista
 
-# Return only suda ones
-only_listed = True
+if __name__ == "__main__":
 
-# Number of items to look at
-number_of_items = 50
+    # Return only suda ones
+    only_listed = True
 
-lista = top_most_traded(only_listed)
-df2 = pd.DataFrame(lista)
-df2.columns = ['name', 'volume', 'avg_price']
-top = df2.sort_values(by='volume', ascending=False).head(number_of_items)
-print(top)
+    # Number of items to look at
+    number_of_items = 50
+
+    lista = top_most_traded(only_listed)
+    df2 = pd.DataFrame(lista)
+    df2.columns = ['name', 'volume', 'avg_price']
+    top = df2.sort_values(by='volume', ascending=False).head(number_of_items)
+    print(top)
