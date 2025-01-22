@@ -13,6 +13,21 @@ def getitems(*args, no=None):
     """Get current item list."""
 
     items = []
+    for arg in args:
+        if arg=="Suda" or arg=="Hexis":
+            with open(arg + ".txt",'r') as f:
+                for line in f:
+                    pair = []
+                    item_name = line.strip('\n')
+                    file_name = os.path.join("./dump/",str(item_name) + ".json")
+                    pair.append(file_name)
+                    item_lower = item_name.replace(" ", "_").lower()
+                    entire_url = "https://api.warframe.market/v1/items/"\
+                        + str(item_lower) + "/statistics"
+                    pair.append(entire_url)
+                    items.append(pair)
+            return items
+
     for filename in os.listdir("./items/wfm-items/tracked/items/"):
         with open(os.path.join("./items/wfm-items/tracked/items/"\
                                ,filename), 'r', encoding='utf-8') as file:

@@ -25,7 +25,7 @@ if __name__ == "__main__":
                         case "3":
                             items = getitems("mod", "rare")
                 case "2":
-                    choice3 = input(" 1. Warframe\n 2. Primary\n 3. Secondary\n 4. Melee\n 5. Companion\n 6. Railjack\n")
+                    choice3 = input(" 1. Warframe\n 2. Primary\n 3. Secondary\n 4. Melee\n 5. Companion\n 6. Railjack\n 7. Suda\n 8. Hexis\n")
                     match choice3:
                         case "1":
                             items = getitems("mod", "warframe")
@@ -39,6 +39,10 @@ if __name__ == "__main__":
                             items = getitems("mod", "companion")
                         case "6":
                             items = getitems("mod", "railjack")
+                        case "7":
+                            items = getitems("Suda")
+                        case "8":
+                            items = getitems("Hexis")
                 case "3":
                     items = getitems("mod")
         case "3":
@@ -76,20 +80,20 @@ if __name__ == "__main__":
     if proceed == "yes" or proceed == "y" or proceed == "Yes" or proceed == "Y":
         download_and_save(items)
     
-    # Get a list of the item names
-    file_names = []
-    for item in items:
-        file_names.append(item[0])
-    choice = input("Analyze: 1. Top most traded\n")
-    match choice:
-        case "1":
-            number_of_items = 50
+        # Get a list of the item names
+        file_names = []
+        for item in items:
+            file_names.append(item[0])
+        choice = input("Analyze: 1. Top most traded\n")
+        match choice:
+            case "1":
+                number_of_items = 50
 
-            lista = analyze.top_most_traded(file_names)
-            df2 = pd.DataFrame(lista)
-            df2.columns = ['name', 'volume', 'avg_price']
-            top = df2.sort_values(by='volume', ascending=False).head(number_of_items)
-            print(top)
+                lista = analyze.top_most_traded(file_names)
+                df2 = pd.DataFrame(lista)
+                df2.columns = ['name', 'volume', 'avg_price']
+                top = df2.sort_values(by='volume', ascending=False).head(number_of_items)
+                print(top)
             
 
 
