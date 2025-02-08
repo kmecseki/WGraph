@@ -7,7 +7,7 @@ import pandas as pd
 import json
 import os
 
-def top_most_traded(file_names):
+def top_most_traded(file_names, rank=0):
     """Returns most traded items."""
     
     lista = []
@@ -26,7 +26,7 @@ def top_most_traded(file_names):
             df['time'] = pd.to_datetime(df['datetime'])
             # If we are looking at mods, only return rank 0
             if 'mod_rank' in df.columns:
-                rank0 = df[df['mod_rank'] == 0]
+                rank0 = df[df['mod_rank'] == rank]
             else:
                 rank0 = df
             total_volume = rank0['volume'].sum()
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     only_listed = True
 
     # Number of items to look at
-    number_of_items = 50
+    number_of_items = 20
 
     lista = top_most_traded(only_listed)
     df2 = pd.DataFrame(lista)

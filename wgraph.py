@@ -14,7 +14,7 @@ def getitems(*args, no=None):
 
     items = []
     for arg in args:
-        if arg=="Suda" or arg=="Hexis":
+        if arg=="Suda" or arg=="Hexis" or arg=="Loka" or arg=="Steel":
             with open(arg + ".txt",'r') as f:
                 for line in f:
                     pair = []
@@ -33,7 +33,8 @@ def getitems(*args, no=None):
                                ,filename), 'r', encoding='utf-8') as file:
             data = json.load(file)
             if "tags" in data:
-                if all(arg in data["tags"] for arg in args):# and no is not None and no not in data["tags"]:
+                if all(arg in data["tags"] for arg in args) and all(arg not in data["tags"] for arg in no):
+                #if all(arg in data["tags"] for arg in args):# and no is not None and no not in data["tags"]:
                     make_url = url_gen(data)
                     items.append(make_url)
     return items
