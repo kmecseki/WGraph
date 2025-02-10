@@ -13,7 +13,7 @@ if __name__ == "__main__":
         case "1":
             items = getitems("arcane_enhancement")
         case "2":
-            choice2 = input("By rarity or function?\n 1. Rarity\n 2. Function\n 3. All mods\n")
+            choice2 = input("By rarity or function?\n 1. Rarity\n 2. Function\n 3. All mods\n 4. Syndicate\n")
             match choice2:
                 case "1":
                     choice3 = input(" 1. Common\n 2. Uncommon\n 3. Rare\n")
@@ -24,8 +24,19 @@ if __name__ == "__main__":
                             items = getitems("mod", "uncommon")
                         case "3":
                             items = getitems("mod", "rare")
+                        case "4":
+                            choice4 = input("1. Suda\n 2. Hexis\n 3. New Loka\n 4. Steel Meridian\n")
+                            match choice4:
+                                case "1":
+                                    items = getitems("Suda")
+                                case "2":
+                                    items = getitems("Hexis")
+                                case "3":
+                                    items = getitems("Loka")
+                                case "4":
+                                    items = getitems("Steel")
                 case "2":
-                    choice3 = input(" 1. Warframe\n 2. Primary\n 3. Secondary\n 4. Melee\n 5. Companion\n 6. Railjack\n 7. Suda\n 8. Hexis\n 9. New Loka\n 10. Steel Meridian\n")
+                    choice3 = input(" 1. Warframe\n 2. Primary\n 3. Secondary\n 4. Melee\n 5. Companion\n 6. Railjack\n 7. Archwing\n")
                     match choice3:
                         case "1":
                             items = getitems("mod", "warframe")
@@ -40,13 +51,7 @@ if __name__ == "__main__":
                         case "6":
                             items = getitems("mod", "railjack")
                         case "7":
-                            items = getitems("Suda")
-                        case "8":
-                            items = getitems("Hexis")
-                        case "9":
-                            items = getitems("Loka")
-                        case "10":
-                            items = getitems("Steel")
+                            items = getitems("mod", "archwing")                          
                 case "3":
                     items = getitems("mod")
         case "3":

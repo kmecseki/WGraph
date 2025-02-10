@@ -33,10 +33,15 @@ def getitems(*args, no=None):
                                ,filename), 'r', encoding='utf-8') as file:
             data = json.load(file)
             if "tags" in data:
-                if all(arg in data["tags"] for arg in args) and all(arg not in data["tags"] for arg in no):
-                #if all(arg in data["tags"] for arg in args):# and no is not None and no not in data["tags"]:
-                    make_url = url_gen(data)
-                    items.append(make_url)
+                if no == None:
+                    if all(arg in data["tags"] for arg in args):
+                        make_url = url_gen(data)
+                        items.append(make_url)
+                else:
+                    if all(arg in data["tags"] for arg in args) and all(arg not in data["tags"] for arg in no):
+                        #if all(arg in data["tags"] for arg in args):# and no is not None and no not in data["tags"]:
+                        make_url = url_gen(data)
+                        items.append(make_url)
     return items
 
 def url_gen(data):
