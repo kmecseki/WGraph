@@ -14,17 +14,12 @@ def getitems(*args, no=None):
 
     items = []
     for arg in args:
-        if arg=="Suda" or arg=="Hexis" or arg=="Loka" or arg=="Steel":
+        # Get Syndicate items
+        if arg=="Suda" or arg=="Hexis" or arg=="Loka" or arg=="Steel" or arg=="Perrin" or arg=="Red":
             with open(arg + ".txt",'r') as f:
                 for line in f:
-                    pair = []
                     item_name = line.strip('\n')
-                    file_name = os.path.join("./dump/",str(item_name) + ".json")
-                    pair.append(file_name)
-                    item_lower = item_name.replace(" ", "_").lower()
-                    entire_url = "https://api.warframe.market/v1/items/"\
-                        + str(item_lower) + "/statistics"
-                    pair.append(entire_url)
+                    pair = make_pair(item_name)
                     items.append(pair)
             return items
 
@@ -35,17 +30,32 @@ def getitems(*args, no=None):
             if "tags" in data:
                 if no == None:
                     if all(arg in data["tags"] for arg in args):
-                        make_url = url_gen(data)
+                        make_url = url_gen_from_json(data)
                         items.append(make_url)
                 else:
                     if all(arg in data["tags"] for arg in args) and all(arg not in data["tags"] for arg in no):
                         #if all(arg in data["tags"] for arg in args):# and no is not None and no not in data["tags"]:
-                        make_url = url_gen(data)
+                        make_url = url_gen_from_json(data)
                         items.append(make_url)
     return items
 
-def url_gen(data):
-    """Generates url for the API request."""
+def make_pair(item_name):
+    '''From item name to a pair of filename in dump and a link'''
+
+    pair = []
+    file_name = os.path.join("./dump/",str(item_name) + ".json")
+    pair.append(file_name)
+    url = gen_wfapi_url(item_name)
+    pair.append(url)
+    return pair
+
+def gen_wfapi_url(item_name):
+    item_lower = item_name.replace(" ", "_").lower()
+    entire_url = "https://api.warframe.market/v1/items/" + str(item_lower) + "/statistics"
+    return entire_url
+
+def url_gen_from_json(data):
+    """Generates url from the json file for the API request."""
 
     pair = []
     name = data.get('url_name', {})
@@ -84,10 +94,10 @@ def fetch_json_and_save(url):
         print(f"An error occurred while saving the JSON data: {e}")
 
 def download_and_save(lista):
-    i = 1
+
     N = len(lista)
-    for urls in lista:
+    for ind, urls in enumerate(lista):
         fetch_json_and_save(urls)
-        print(f"Processing {urls[0]}, {i}/{N}")
-        i += 1
+        print(f"Processing {urls[0]}, {ind}/{N}")
+
 

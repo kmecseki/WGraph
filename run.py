@@ -24,17 +24,6 @@ if __name__ == "__main__":
                             items = getitems("mod", "uncommon")
                         case "3":
                             items = getitems("mod", "rare")
-                        case "4":
-                            choice4 = input("1. Suda\n 2. Hexis\n 3. New Loka\n 4. Steel Meridian\n")
-                            match choice4:
-                                case "1":
-                                    items = getitems("Suda")
-                                case "2":
-                                    items = getitems("Hexis")
-                                case "3":
-                                    items = getitems("Loka")
-                                case "4":
-                                    items = getitems("Steel")
                 case "2":
                     choice3 = input(" 1. Warframe\n 2. Primary\n 3. Secondary\n 4. Melee\n 5. Companion\n 6. Railjack\n 7. Archwing\n")
                     match choice3:
@@ -54,6 +43,21 @@ if __name__ == "__main__":
                             items = getitems("mod", "archwing")                          
                 case "3":
                     items = getitems("mod")
+                case "4":
+                    choice4 = input("1. Suda\n 2. Hexis\n 3. New Loka\n 4. Steel Meridian\n 5. Perrin Sequence\n 6. Red Veil\n")
+                    match choice4:
+                                case "1":
+                                    items = getitems("Suda")
+                                case "2":
+                                    items = getitems("Hexis")
+                                case "3":
+                                    items = getitems("Loka")
+                                case "4":
+                                    items = getitems("Steel")
+                                case "5":
+                                    items = getitems("Perrin")
+                                case "6":
+                                    items = getitems("Red")
         case "3":
             choice3 = input("1. Warframe primes\n 2. Primary primes\n 3. Secondary primes\n 4. Melee primes\n 5. Companion primes\n 6. All primes\n")
             match choice3:
