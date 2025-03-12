@@ -1,13 +1,17 @@
-
+import os
+import json
+import datetime
 import pandas as pd
-from wgraph import getitems, download_and_save
+from wgraph import getitems, download_and_save, get_current_orders, download_json
 import analyze
-
 
 if __name__ == "__main__":
 
-    # get item names 
-    choice = input("What items do you want to check?\n 1. Arcanes\n 2. Mods\n 3. Prime parts and sets\n 4. Non-prime parts\n 5. Relics\n 6. Single item statistics\n")
+    os.makedirs("./dump", exist_ok=True)
+    os.makedirs("./dump/items/", exist_ok=True)
+    os.makedirs("./dump/my/", exist_ok=True)
+    os.makedirs("./dump/orders/", exist_ok=True)
+    choice = input("What items do you want to check?\n 1. Arcanes\n 2. Mods\n 3. Prime parts and sets\n 4. Non-prime parts\n 5. Relics\n 6. Single item statistics\n 7. Analyze current orders\n")
     items = []
     match choice:
         case "1":
@@ -94,9 +98,38 @@ if __name__ == "__main__":
                                ,filename), 'r', encoding='utf-8') as file:
                 data = json.load(file)
                 item = url_gen(data)
-    
+            exit(0)
+        case "7":
+            # Get my orders
+            refresh_orders = input("Refresh orders? Default: yes\n")
+            bool_refresh_orders = (refresh_orders == "" or refresh_orders == "yes" or refresh_orders == "y" or refresh_orders == "Yes" or refresh_orders == "Y")
+            orders = get_current_orders("Kat78", bool_refresh_orders)
+
+            # Get item list
+            refresh_items = input("Refresh items? Default: no\n")
+            bool_refresh_items = (refresh_orders == "yes" or refresh_orders == "y" or refresh_orders == "Yes" or refresh_orders == "Y")
+            file_name = os.path.join("./dump/my/items.json")
+            url = "https://api.warframe.market/v2/items"
+            if not os.path.exists(file_name) or bool_refresh_items:
+                print("Downloading items file...")
+                download_json(url, file_name)
+                print("Done")
+            
+            df = pd.DataFrame(orders)[['platinum', 'rank', 'quantity', 'itemId']]
+            # Match ids with names
+            with open(file_name, "r") as f:
+                items_data = json.load(f)
+                item_map_name = {item['id']: item['i18n']['en']['name'] for item in items_data['data']}
+                item_map_slug = {item['id']: item['slug'] for item in items_data['data']}
+
+            df['Name'] = df['itemId'].map(item_map_name)
+            df['slug'] = df['itemId'].map(item_map_slug)
+            df = df.fillna(0.0)
+            analyze.analyze_orders(df)
+            exit(0)
+
     proceed = input("This will be " + str(len(items)) + " items. Proceed?")
-    if proceed == "yes" or proceed == "y" or proceed == "Yes" or proceed == "Y":
+    if proceed == "" or proceed == "yes" or proceed == "y" or proceed == "Yes" or proceed == "Y":
         download_and_save(items)
     
         # Get a list of the item names
