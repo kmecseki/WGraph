@@ -2,6 +2,7 @@
 Analyze data, e.g. get items that are worth the most, or are most sought for.
 """
 
+import time
 import matplotlib.pyplot as plt
 import pandas as pd
 import json
@@ -40,23 +41,28 @@ def get_lowest_price(file_name, rank):
     with open(file_name, 'r') as f:
         data = json.load(f)
         df = pd.DataFrame(data["data"])
-        df_filtered = df[(df["type"] == "sell") & (df["visible"] == True) & (df["rank"] == rank) & ((df["user"])["status"] == "online")][["platinum", "quantity", "rank"]]
-        lowest_platinum = df['platinum'].nsmallest(1)
-        counts = df['platinum'].value_counts()
-        count_lowest = counts[lowest_platinum]
-        print(lowest_platinum)
-        print(count_lowest)
-
+        df["status"] = df["user"].apply(lambda x: x["status"])
+        df_filtered = df[(df["type"] == "sell") & (df["visible"] == True) & ((df["rank"] == rank) if "rank" in df.columns else True) & (df["status"] == "ingame")][["platinum", "quantity", "status"]]
+        lowest_platinum = df_filtered['platinum'].nsmallest(1).values[0]
+    return lowest_platinum
 
 def analyze_orders(df):
     for index, row in df.iterrows():
         url = "https://api.warframe.market/v2/orders/item/" + str(row['slug'])
         file_name = "./dump/orders/" + str(row['slug']) + ".json"
         wgraph.download_json(url, file_name)
-        print("Checking " + row["Name"])
-        get_lowest_price(file_name, row["rank"])
-        exit(0)
-
+        print("Checking " + row["Name"] + " .... ", end="")
+        my_price = row["platinum"]
+        lowest_price = get_lowest_price(file_name, row["rank"])
+        print(f"Lowest price: {lowest_price}", end="")
+        print(f"   My price: {my_price} ..... ", end="")
+        if (my_price - lowest_price) < 0:
+            print("\033[31mTOO CHEAP\033[0m")
+        elif (my_price - lowest_price) >= 5:
+            print("\033[31mTOO EXPENSIVE\033[0m")
+        else:
+            print("\033[32mOK\033[0m")
+        time.sleep(1)
 
 if __name__ == "__main__":
 
