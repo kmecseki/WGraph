@@ -1,6 +1,7 @@
 import os
 import json
 import datetime
+import time
 import pandas as pd
 from wgraph import getitems, download_and_save, get_current_orders, download_json
 import analyze
@@ -11,7 +12,7 @@ if __name__ == "__main__":
     os.makedirs("./dump/items/", exist_ok=True)
     os.makedirs("./dump/my/", exist_ok=True)
     os.makedirs("./dump/orders/", exist_ok=True)
-    choice = input("What items do you want to check?\n 1. Arcanes\n 2. Mods\n 3. Prime parts and sets\n 4. Non-prime parts\n 5. Relics\n 6. Single item statistics\n 7. Analyze current orders\n")
+    choice = input("What items do you want to check?\n 1. Arcanes\n 2. Mods\n 3. Prime parts and sets\n 4. Non-prime parts\n 5. Relics\n 6. Single item statistics\n 7. Analyze current orders\n 8. Live alert\n")
     items = []
     match choice:
         case "1":
@@ -127,6 +128,32 @@ if __name__ == "__main__":
             df = df.fillna(0.0)
             analyze.analyze_orders(df)
             exit(0)
+        case "8":
+            # Take item name
+            item_name = input("Item name?:\n")
+            url_item_name = item_name.replace(" ", "_").replace("'", "").lower()
+            rank = input("If this is a mod, rank? Otherwise just type 0.\n")
+            url = "https://api.warframe.market/v2/orders/item/" + str(url_item_name)
+            file_name = os.path.join("./dump/my/" + str(url_item_name) + "livealert.json")
+            price_wanted = input("Price wanted?\n")
+            while not price_wanted.isdigit() and int(price_wanted) <= 0:
+                price_wanted = input("Price wanted?:\n")
+            is_correct = input("Item name: " + str(item_name) + ". The full url will be: " + url + " for " + str(price_wanted) + ". Is this correct? Default: yes\n")
+            bool_is_correct = (is_correct == "yes" or is_correct == "y" or is_correct == "Yes" or is_correct == "Y" or is_correct == "")
+            while bool_is_correct:
+                print("Checking...")
+                download_json(url, file_name)
+                lowest_price = analyze.get_lowest_price(file_name, rank)
+                if lowest_price <= int(price_wanted):
+                    print("Found one for " + str(lowest_price) + "!!!!")
+                    bool_is_correct = False
+                else:
+                    print("Current lowest price is: " + str(lowest_price) + ". Waiting 60 sec before trying again...")
+                    time.sleep(60)
+            exit(0)
+            
+            # Keep checking
+            # When there is a hit, write out something and exit
 
     proceed = input("This will be " + str(len(items)) + " items. Proceed?")
     if proceed == "" or proceed == "yes" or proceed == "y" or proceed == "Yes" or proceed == "Y":
