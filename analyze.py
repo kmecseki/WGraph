@@ -43,7 +43,11 @@ def get_lowest_price(file_name, rank):
         df = pd.DataFrame(data["data"])
         df["status"] = df["user"].apply(lambda x: x["status"])
         df_filtered = df[(df["type"] == "sell") & (df["visible"] == True) & ((df["rank"] == rank) if "rank" in df.columns else True) & (df["status"] == "ingame")][["platinum", "quantity", "status"]]
-        lowest_platinum = df_filtered['platinum'].nsmallest(1).values[0]
+        if df_filtered['platinum'].nsmallest(1).values != None:
+            lowest_platinum = df_filtered['platinum'].nsmallest(1).values[0]
+        else:
+            lowest_platinum = 999
+            print("No other item of this kind online was found.")
     return lowest_platinum
 
 def analyze_orders(df):
