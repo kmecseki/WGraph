@@ -5,6 +5,7 @@ import time
 import pandas as pd
 from wgraph import getitems, download_and_save, get_current_orders, download_json
 import analyze
+from kubrow import lastkubrow
 
 if __name__ == "__main__":
 
@@ -12,7 +13,7 @@ if __name__ == "__main__":
     os.makedirs("./dump/items/", exist_ok=True)
     os.makedirs("./dump/my/", exist_ok=True)
     os.makedirs("./dump/orders/", exist_ok=True)
-    choice = input("What items do you want to check?\n 1. Arcanes\n 2. Mods\n 3. Prime parts and sets\n 4. Non-prime parts\n 5. Relics\n 6. Single item statistics\n 7. Analyze current orders\n 8. Live alert\n")
+    choice = input("What items do you want to check?\n 1. Arcanes\n 2. Mods\n 3. Prime parts and sets\n 4. Non-prime parts\n 5. Relics\n 6. Single item statistics\n 7. Analyze current orders\n 8. Live alert\n 9. Kubrow colors\n")
     items = []
     match choice:
         case "1":
@@ -154,6 +155,11 @@ if __name__ == "__main__":
             
             # Keep checking
             # When there is a hit, write out something and exit
+        case "9":
+            print("")
+            lastkubrow()
+            print("")
+            exit(0)
 
     proceed = input("This will be " + str(len(items)) + " items. Proceed?")
     if proceed == "" or proceed == "yes" or proceed == "y" or proceed == "Yes" or proceed == "Y":
