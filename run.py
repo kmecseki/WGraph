@@ -31,7 +31,7 @@ if __name__ == "__main__":
                         case "3":
                             items = getitems("mod", "rare")
                 case "2":
-                    choice3 = input(" 1. Warframe\n 2. Primary\n 3. Secondary\n 4. Melee\n 5. Companion\n 6. Railjack\n 7. Archwing\n")
+                    choice3 = input(" 1. Warframe\n 2. Primary\n 3. Secondary\n 4. Melee\n 5. Companion\n 6. Railjack\n 7. Archwing\n 8. Aura\n")
                     match choice3:
                         case "1":
                             items = getitems("mod", "warframe")
@@ -46,7 +46,9 @@ if __name__ == "__main__":
                         case "6":
                             items = getitems("mod", "railjack")
                         case "7":
-                            items = getitems("mod", "archwing")                          
+                            items = getitems("mod", "archwing")  
+                        case "8":
+                            items = getitems("mod", "aura")
                 case "3":
                     items = getitems("mod")
                 case "4":
